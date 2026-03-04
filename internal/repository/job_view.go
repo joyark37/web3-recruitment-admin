@@ -76,3 +76,31 @@ func (r *JobViewRepository) GetAllStats() ([]model.JobViewStats, error) {
 	}
 	return stats, nil
 }
+
+func (r *JobViewRepository) GetDailyViews(days int) ([]model.DailyView, error) {
+	rows, err := r.db.Query(`
+		SELECT 
+			TO_CHAR(DATE(viewed_at), 'YYYY-MM-DD') as date,
+			COUNT(*) as views
+		FROM job_views
+		WHERE viewed_at >= CURRENT_DATE - INTERVAL '7 days'
+		GROUP BY DATE(viewed_at)
+		ORDER BY date ASC`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var views []model.DailyView
+	for rows.Next() {
+		var v model.DailyView
+		if err := rows.Scan(&v.Date, &v.Views); err != nil {
+			return nil, err
+		}
+		views = append(views, v)
+	}
+	if views == nil {
+		views = []model.DailyView{}
+	}
+	return views, nil
+}

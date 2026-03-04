@@ -29,3 +29,7 @@ func (s *JobViewService) GetStatsByJobID(jobID int) (*model.JobViewStats, error)
 func (s *JobViewService) GetAllStats() ([]model.JobViewStats, error) {
 	return s.repo.GetAllStats()
 }
+
+func (s *JobViewService) GetDailyViews(days int) ([]model.DailyView, error) {
+	return s.repo.GetDailyViews(days)
+}

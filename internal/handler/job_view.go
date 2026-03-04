@@ -20,6 +20,7 @@ func NewJobViewHandler(s *service.JobViewService) *JobViewHandler {
 func (h *JobViewHandler) RegisterRoutes(r *gin.RouterGroup) {
 	r.GET("/stats/views", h.getAllStats)
 	r.GET("/stats/views/:jobId", h.getStatsByJob)
+	r.GET("/stats/daily", h.getDailyViews)
 }
 
 // TrackView - public endpoint for tracking job views
@@ -65,4 +66,14 @@ func (h *JobViewHandler) getStatsByJob(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, stats)
+}
+
+func (h *JobViewHandler) getDailyViews(c *gin.Context) {
+	views, err := h.service.GetDailyViews(7)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	
+	c.JSON(http.StatusOK, views)
 }

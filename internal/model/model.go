@@ -24,6 +24,11 @@ type JobViewStats struct {
 	ViewsThisWeek int   `json:"viewsThisWeek"`
 }
 
+type DailyView struct {
+	Date  string `json:"date"`
+	Views int    `json:"views"`
+}
+
 type Application struct {
 	ID              int       `json:"id"`
 	JobID          int       `json:"jobId"`
